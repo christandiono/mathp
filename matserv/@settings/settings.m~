@@ -1,0 +1,8 @@
+classdef settings
+    properties (Constant)
+        ALLOWED_METHODS={'GET'}
+        HTML_ROOT_DIR='/home/chris/Desktop/matlabserver/htdocs'
+        REDIR_NOSLASH=true
+        ERROR_403=[HTML_ROOT_DIR '/403.
+    end
+end
