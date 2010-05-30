@@ -38,6 +38,7 @@ function server(output_port, number_of_retries)
             % wait for 10 second for client to connect server socket
 
                 server_socket = ServerSocket(output_port);
+                server_socket.setReuseAddress(1)
                 if settings.DEBUG && settings.TIMEOUT
                     server_socket.setSoTimeout(10000);
                 end

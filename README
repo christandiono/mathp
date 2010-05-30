@@ -1,0 +1,1 @@
+MATHP is the MATLAB-Assisted Tool for Hypertext Preprocessing. It requires MATLAB (sorry; Octave doesn't support "import java.lang.*"-type syntax or any kind of import, apparently).
