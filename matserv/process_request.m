@@ -100,7 +100,12 @@ while ~isempty(privatestruct.starts)
     try
         privatestruct.T=evalc(char(privatestruct.content(privatestruct.starts(1)+7:privatestruct.ends(1)-1)));
     catch e
-        error('MATHP:BadMATHPCode',['There was an error processing ' privatestruct.localpath ':' 10 e.identifier 10 e.message])
+        import settings
+        if settings.DEBUG
+            rethrow(e)
+        else
+            error('MATHP:BadMATHPCode',['There was an error processing ' privatestruct.localpath ':' 10 e.identifier 10 e.message])
+        end
     end
 
     
