@@ -1,5 +1,5 @@
 function [HttpResponse,code]=process_request(HttpRequest)
-    %try
+    try
         import settings
 
         for linenumber=1:length(HttpRequest)
@@ -24,7 +24,7 @@ function [HttpResponse,code]=process_request(HttpRequest)
         end
         HttpResponse=make_response(hr);
         return
-    %catch e
+    catch e
         import settings
         code=500;
         hr=make_header(protocol, code, localpath);
@@ -36,7 +36,7 @@ function [HttpResponse,code]=process_request(HttpRequest)
         end
         HttpResponse=make_response(hr);
         return
-    %end
+    end
 end
 
 
@@ -97,11 +97,11 @@ while ~isempty(privatestruct.starts)
         error('MATHP:BadMATHPCode',['There was an error processing ' privatestruct.localpath ' due to bad <?mathp or ?> tag(s).'])
     end
     
-    %try
+    try
         privatestruct.T=evalc(char(privatestruct.content(privatestruct.starts(1)+7:privatestruct.ends(1)-1)));
-    %catch e
-    %    error('MATHP:BadMATHPCode',['There was an error processing ' privatestruct.localpath ':' 10 e.identifier 10 e.message])
-    %end
+    catch e
+        error('MATHP:BadMATHPCode',['There was an error processing ' privatestruct.localpath ':' 10 e.identifier 10 e.message])
+    end
 
     
     if privatestruct.starts(1)-1<0

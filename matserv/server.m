@@ -25,7 +25,7 @@ function server(output_port, number_of_retries)
 
         retry = retry + 1;
 
-        %try
+        try
             if ((number_of_retries > 0) && (retry > number_of_retries))
                 fprintf(1, 'Too many retries\n');
                 break;
@@ -87,19 +87,22 @@ function server(output_port, number_of_retries)
                 output_socket.close;
                 %break;
 
-        %catch e
-%             if ~isempty(server_socket)
-%                 server_socket.close
-%             end
-% 
-%             if ~isempty(output_socket)
-%                 output_socket.close
-%             end
-%             
-%             disp([datestr(now) ' Error: ' e.identifier])
-%             
-%             % pause before retrying
-%             %pause(1);
-        %end
+        catch e
+            if ~isempty(server_socket)
+                server_socket.close
+            end
+
+            if ~isempty(output_socket)
+                output_socket.close
+            end
+            
+            if settings.DEBUG
+                rethrow(e)
+            else 
+                disp([datestr(now) ' Error: ' e.identifier])
+            end
+            % pause before retrying
+            %pause(1);
+        end
     end
 end
