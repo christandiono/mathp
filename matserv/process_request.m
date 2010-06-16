@@ -1,5 +1,5 @@
 function [HttpResponse,code]=process_request(HttpRequest)
-    try
+    %try
         import settings
 
         for linenumber=1:length(HttpRequest)
@@ -9,7 +9,7 @@ function [HttpResponse,code]=process_request(HttpRequest)
         end
         
         if ~exist('method','var') || isempty(method) || ~exist('urlpath','var') || isempty(urlpath) || ~exist('protocol','var') || isempty(protocol) || ~any(strcmp(method,settings.ALLOWED_METHODS))
-            HttpResponse=make_response(make_header(405));
+            HttpResponse=make_response(make_header(protocol, 405));
             return
         end
         
@@ -20,11 +20,11 @@ function [HttpResponse,code]=process_request(HttpRequest)
         if ~strcmp(method,'HEAD')
             hr{length(hr)+1}=addcontent(localpath);
         else
-            hr=hr{1:end-1}; %strip extra linebreak
+            hr{length(hr)+1}=''; % add extra linebreak
         end
         HttpResponse=make_response(hr);
         return
-    catch e
+    %catch e
         import settings
         code=500;
         hr=make_header(protocol, code, localpath);
@@ -36,7 +36,7 @@ function [HttpResponse,code]=process_request(HttpRequest)
         end
         HttpResponse=make_response(hr);
         return
-    end
+    %end
 end
 
 
@@ -70,7 +70,18 @@ end
 function content=addcontent(localpath)
 % loads content and optionally runs mhp code
 
-privatestruct=struct('starts', [], 'ends', [], 'content', [],'headpart',[],'tailpart',[],'T',[],'breaks',[],'localpath',localpath);
+
+
+mathp_plot=@(varargin) insert_plot(varargin); %not private
+
+privatestruct=struct('starts', [], ...
+    'ends', [], ...
+    'content', [],...
+    'headpart',[],...
+    'tailpart',[],...
+    'T',[],...
+    'breaks',[],...
+    'localpath',localpath);
 clear localpath
 
 privatestruct.content=fread(fopen(privatestruct.localpath,'r'),inf,'ubit8',0,'n')';
@@ -86,11 +97,11 @@ while ~isempty(privatestruct.starts)
         error('MATHP:BadMATHPCode',['There was an error processing ' privatestruct.localpath ' due to bad <?mathp or ?> tag(s).'])
     end
     
-    try
+    %try
         privatestruct.T=evalc(char(privatestruct.content(privatestruct.starts(1)+7:privatestruct.ends(1)-1)));
-    catch e
-        error('MATHP:BadMATHPCode',['There was an error processing ' privatestruct.localpath ':' 10 e.identifier 10 e.message])
-    end
+    %catch e
+    %    error('MATHP:BadMATHPCode',['There was an error processing ' privatestruct.localpath ':' 10 e.identifier 10 e.message])
+    %end
 
     
     if privatestruct.starts(1)-1<0
@@ -117,4 +128,18 @@ while ~isempty(privatestruct.starts)
     privatestruct.ends=findstr(privatestruct.content,'?>');
 end
 content=privatestruct.content;
+end
+
+function insert_plot(varargin)
+
+import settings
+
+plot(varargin{:}{:}) % don't get why this is necessary...
+
+[s,w]=system('uuidgen');
+
+saveas(gcf, [settings.HTML_ROOT_DIR settings.IMAGES_DIR w(1:end-1)], settings.OUTPUT_FORMAT)
+
+fprintf([settings.IMAGES_DIR w(1:end-1) '.' settings.OUTPUT_FORMAT])
+
 end

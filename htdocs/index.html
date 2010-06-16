@@ -1,3 +1,5 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <title>Hi!</title>
 <h1>Hello world!</h1>
@@ -42,8 +44,26 @@ i
 ?>
 </pre>
 
+And you can plot things! (The DPI is 300)
+
+<pre>
+&lt;img src="&lt;?mathp
+    close all
+    DPI=300; % standard DPI
+    set(gcf,'PaperPosition',[0,0,600/DPI,300/DPI]) % pixels/DPI to get inches
+    mathp_plot([0:pi/16:2*pi],sin([0:pi/16:2*pi]))
+    ?&gt;" height="100px" alt="A pretty graph"&gt;
+</pre>
+
+<img src="<?mathp
+    close all
+    DPI=300; % standard DPI
+    set(gcf,'PaperPosition',[0,0,600/DPI,300/DPI]) % pixels/DPI to get inches
+    mathp_plot([0:pi/16:2*pi],sin([0:pi/16:2*pi]))
+    ?>" height="100px" alt="A pretty graph">
+
 <?mathp
 
-disp('</html>')
+fprintf([10 '</html>'])
 
 ?>
